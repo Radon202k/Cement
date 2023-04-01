@@ -32,6 +32,10 @@
 
 #endif
 
+#if !defined(IPV6_V6ONLY)
+#define IPV6_V6ONLY 27
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -53,7 +57,7 @@ int main ()
 	printf("Configuring local address...\n");
 	struct addrinfo hints;
 	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;
+	hints.ai_family = AF_INET6;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
 
@@ -67,6 +71,15 @@ int main ()
 	if (!ISVALIDSOCKET(socket_listen))
 	{
 		fprintf(stderr, "socket() failed. (%d)\n", GETSOCKETERRNO());
+		return 1;
+	}
+
+	/* Clear the IPV6_V6ONLY flag */
+	int option = 0;
+	if (setsockopt(socket_listen, IPPROTO_IPV6, IPV6_V6ONLY,
+		(void *)&option, sizeof(option)))
+	{
+		fprintf(stderr, "setsockopt() failed. (%d)\n", GETSOCKETERRNO());
 		return 1;
 	}
 
