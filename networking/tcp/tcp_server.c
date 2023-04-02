@@ -1,3 +1,5 @@
+/* For educational purposes only! Based on https://github.com/codeplea/Hands-On-Network-Programming-with-C */
+
 #include "../socket_utils.h"
 #include <ctype.h>
 
